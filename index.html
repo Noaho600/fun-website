@@ -7,73 +7,94 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎉 Fun Stuff</h1>
-            <p>A collection of weird and wonderful things to do on the internet</p>
-            <div id="anniversary-badge" style="display:none;" class="anniversary-badge">🎂 1 Year Anniversary! 🎂</div>
-        </header>
+    <div id="home-page" class="page-container">
+        <div class="container">
+            <header>
+                <h1>🎉 Fun Stuff</h1>
+                <p>A collection of weird and wonderful things to do on the internet</p>
+                <div id="anniversary-badge" style="display:none;" class="anniversary-badge">🎂 1 Year Anniversary! 🎂</div>
+            </header>
 
-        <nav class="experiences" id="experiences-grid">
-            <a href="#" class="experience-card" onclick="goToPage('bounce')">
-                <div class="experience-icon">🏓</div>
-                <h3>Bounce</h3>
-                <p>Click to create bouncing balls</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('draw')">
-                <div class="experience-icon">🎨</div>
-                <h3>Draw</h3>
-                <p>Create art with your mouse</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('paint')">
-                <div class="experience-icon">🖌️</div>
-                <h3>Paint With Particles</h3>
-                <p>Leave a trail of colorful particles</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('music')">
-                <div class="experience-icon">🎵</div>
-                <h3>Music</h3>
-                <p>Play music with your keyboard</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('gravity')">
-                <div class="experience-icon">🌍</div>
-                <h3>Gravity</h3>
-                <p>Experience interactive gravity</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('mandelbrot')">
-                <div class="experience-icon">🌀</div>
-                <h3>Mandelbrot</h3>
-                <p>Explore fractal beauty</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('flappy')">
-                <div class="experience-icon">🐦</div>
-                <h3>Flappy Bird</h3>
-                <p>Classic tap game with a twist</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('snake')">
-                <div class="experience-icon">🐍</div>
-                <h3>Snake</h3>
-                <p>Eat the food and grow</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('breakout')">
-                <div class="experience-icon">🧱</div>
-                <h3>Breakout</h3>
-                <p>Smash bricks with the ball</p>
-            </a>
-            <a href="#" class="experience-card" onclick="goToPage('pong')">
-                <div class="experience-icon">🏸</div>
-                <h3>Pong</h3>
-                <p>Two-player classic game</p>
-            </a>
-            <a href="#" id="anniversary-card" style="display:none;" class="experience-card" onclick="goToPage('anniversary')">
-                <div class="experience-icon">🎂</div>
-                <h3>Anniversary!</h3>
-                <p>Celebrate 1 year of fun!</p>
-            </a>
-        </nav>
+            <nav class="experiences" id="experiences-grid">
+                <a href="#" class="experience-card" onclick="navigateTo('bounce'); return false;">
+                    <div class="experience-icon">🏓</div>
+                    <h3>Bounce</h3>
+                    <p>Click to create bouncing balls</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('draw'); return false;">
+                    <div class="experience-icon">🎨</div>
+                    <h3>Draw</h3>
+                    <p>Create art with your mouse</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('paint'); return false;">
+                    <div class="experience-icon">🖌️</div>
+                    <h3>Paint Particles</h3>
+                    <p>Leave a trail of color</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('music'); return false;">
+                    <div class="experience-icon">🎵</div>
+                    <h3>Music</h3>
+                    <p>Play an interactive piano</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('gravity'); return false;">
+                    <div class="experience-icon">🌍</div>
+                    <h3>Gravity Field</h3>
+                    <p>Attract particles with your mouse</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('mandelbrot'); return false;">
+                    <div class="experience-icon">🌀</div>
+                    <h3>Mandelbrot</h3>
+                    <p>Explore infinite fractals</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('flappybird'); return false;">
+                    <div class="experience-icon">🐦</div>
+                    <h3>Flappy Bird</h3>
+                    <p>Click to avoid pipes</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('snake'); return false;">
+                    <div class="experience-icon">🐍</div>
+                    <h3>Snake Master</h3>
+                    <p>Eat and grow longer</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('spaceraid'); return false;">
+                    <div class="experience-icon">🛸</div>
+                    <h3>Space Raid</h3>
+                    <p>Shoot down incoming enemies</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('colorclash'); return false;">
+                    <div class="experience-icon">🎯</div>
+                    <h3>Color Clash</h3>
+                    <p>Match the color combinations</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('puzzleblast'); return false;">
+                    <div class="experience-icon">💥</div>
+                    <h3>Puzzle Blast</h3>
+                    <p>Pop matching blocks</p>
+                </a>
+                <a href="#" class="experience-card" onclick="navigateTo('infinityrun'); return false;">
+                    <div class="experience-icon">🏃</div>
+                    <h3>Infinity Run</h3>
+                    <p>Jump obstacles forever</p>
+                </a>
+                <a href="#" id="anniversary-card" style="display:none;" class="experience-card" onclick="navigateTo('anniversary'); return false;">
+                    <div class="experience-icon">🎂</div>
+                    <h3>Anniversary!</h3>
+                    <p>Celebrate 1 year of fun!</p>
+                </a>
+            </nav>
+        </div>
     </div>
 
-    <div id="page-content"></div>
+    <div id="game-page" class="page-container" style="display:none;">
+        <div class="game-header">
+            <button class="back-button" onclick="goHome()">
+                <span class="back-icon">←</span> Back to Home
+            </button>
+            <h1 id="game-title"></h1>
+            <div id="game-info"></div>
+        </div>
+        <div id="game-container" class="game-container"></div>
+    </div>
 
     <script src="script.js"></script>
     <script>
