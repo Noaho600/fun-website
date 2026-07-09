@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Stuff - Interactive Experiences</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎉 Fun Stuff</h1>
+            <p>A collection of weird and wonderful things to do on the internet</p>
+        </header>
+
+        <nav class="experiences">
+            <a href="#" class="experience-card" onclick="goToPage('bounce')">
+                <div class="experience-icon">🏓</div>
+                <h3>Bounce</h3>
+                <p>Click and drag to bounce things around</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('draw')">
+                <div class="experience-icon">🎨</div>
+                <h3>Draw</h3>
+                <p>Create art with your mouse</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('paint')">
+                <div class="experience-icon">🖌️</div>
+                <h3>Paint With Particles</h3>
+                <p>Leave a trail of colorful particles</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('music')">
+                <div class="experience-icon">🎵</div>
+                <h3>Music</h3>
+                <p>Play music with your keyboard</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('gravity')">
+                <div class="experience-icon">🌍</div>
+                <h3>Gravity</h3>
+                <p>Experience interactive gravity</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('mandelbrot')">
+                <div class="experience-icon">🌀</div>
+                <h3>Mandelbrot</h3>
+                <p>Explore fractal beauty</p>
+            </a>
+        </nav>
+    </div>
+
+    <div id="page-content"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
