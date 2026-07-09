@@ -11,13 +11,14 @@
         <header>
             <h1>🎉 Fun Stuff</h1>
             <p>A collection of weird and wonderful things to do on the internet</p>
+            <div id="anniversary-badge" style="display:none;" class="anniversary-badge">🎂 1 Year Anniversary! 🎂</div>
         </header>
 
-        <nav class="experiences">
+        <nav class="experiences" id="experiences-grid">
             <a href="#" class="experience-card" onclick="goToPage('bounce')">
                 <div class="experience-icon">🏓</div>
                 <h3>Bounce</h3>
-                <p>Click and drag to bounce things around</p>
+                <p>Click to create bouncing balls</p>
             </a>
             <a href="#" class="experience-card" onclick="goToPage('draw')">
                 <div class="experience-icon">🎨</div>
@@ -44,11 +45,44 @@
                 <h3>Mandelbrot</h3>
                 <p>Explore fractal beauty</p>
             </a>
+            <a href="#" class="experience-card" onclick="goToPage('flappy')">
+                <div class="experience-icon">🐦</div>
+                <h3>Flappy Bird</h3>
+                <p>Classic tap game with a twist</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('snake')">
+                <div class="experience-icon">🐍</div>
+                <h3>Snake</h3>
+                <p>Eat the food and grow</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('breakout')">
+                <div class="experience-icon">🧱</div>
+                <h3>Breakout</h3>
+                <p>Smash bricks with the ball</p>
+            </a>
+            <a href="#" class="experience-card" onclick="goToPage('pong')">
+                <div class="experience-icon">🏸</div>
+                <h3>Pong</h3>
+                <p>Two-player classic game</p>
+            </a>
+            <a href="#" id="anniversary-card" style="display:none;" class="experience-card" onclick="goToPage('anniversary')">
+                <div class="experience-icon">🎂</div>
+                <h3>Anniversary!</h3>
+                <p>Celebrate 1 year of fun!</p>
+            </a>
         </nav>
     </div>
 
     <div id="page-content"></div>
 
     <script src="script.js"></script>
+    <script>
+        // Check if today is the anniversary (July 25)
+        const today = new Date();
+        if (today.getMonth() === 6 && today.getDate() === 25) {
+            document.getElementById('anniversary-badge').style.display = 'block';
+            document.getElementById('anniversary-card').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

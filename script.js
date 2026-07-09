@@ -22,6 +22,21 @@ function goToPage(page) {
         case 'mandelbrot':
             createMandelbrotPage();
             break;
+        case 'flappy':
+            createFlappyPage();
+            break;
+        case 'snake':
+            createSnakePage();
+            break;
+        case 'breakout':
+            createBreakoutPage();
+            break;
+        case 'pong':
+            createPongPage();
+            break;
+        case 'anniversary':
+            createAnniversaryPage();
+            break;
     }
     window.scrollTo(0, 0);
 }
@@ -39,7 +54,7 @@ function createBouncePage() {
             <button class="back-button" onclick="backButton()">← Back</button>
             <div class="page-header">
                 <h2>🏓 Bounce</h2>
-                <p>Click and drag to bounce things around</p>
+                <p>Click to create bouncing balls</p>
             </div>
             <canvas id="bounceCanvas" width="800" height="600"></canvas>
             <div class="controls">
@@ -55,7 +70,6 @@ function createBouncePage() {
     const canvas = document.getElementById('bounceCanvas');
     const ctx = canvas.getContext('2d');
     let balls = [];
-    let isDragging = false;
     let gravity = 1;
     
     class Ball {
@@ -441,15 +455,11 @@ function createMandelbrotPage() {
             <button class="back-button" onclick="backButton()">← Back</button>
             <div class="page-header">
                 <h2>🌀 Mandelbrot Set</h2>
-                <p>Click to zoom in on the fractal. Scroll to reset zoom level.</p>
+                <p>Click to zoom in on the fractal</p>
             </div>
             <canvas id="mandelbrotCanvas" width="800" height="600"></canvas>
             <div class="controls">
                 <button onclick="resetMandelbrot()">Reset</button>
-                <div class="control-group">
-                    <label>Iterations:</label>
-                    <input type="range" id="iterations" min="10" max="500" value="100" onchange="drawMandelbrot()">
-                </div>
             </div>
         </div>
     `;
@@ -474,7 +484,7 @@ function createMandelbrotPage() {
     }
     
     window.drawMandelbrot = () => {
-        const iterations = parseInt(document.getElementById('iterations').value);
+        const iterations = 100;
         const imageData = ctx.createImageData(canvas.width, canvas.height);
         const data = imageData.data;
         
@@ -540,4 +550,570 @@ function createMandelbrotPage() {
     };
     
     window.drawMandelbrot();
+}
+
+// FLAPPY BIRD PAGE
+function createFlappyPage() {
+    const content = document.getElementById('page-content');
+    content.innerHTML = `
+        <div class="page">
+            <button class="back-button" onclick="backButton()">← Back</button>
+            <div class="page-header">
+                <h2>🐦 Flappy Bird</h2>
+                <p>Click or press SPACE to flap. Avoid the pipes!</p>
+            </div>
+            <div class="score-display" id="flappyScore">Score: 0</div>
+            <canvas id="flappyCanvas" width="400" height="600"></canvas>
+            <div class="controls">
+                <button onclick="resetFlappy()">Restart</button>
+            </div>
+        </div>
+    `;
+    
+    const canvas = document.getElementById('flappyCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let bird = { x: 50, y: canvas.height / 2, vy: 0, width: 20, height: 20 };
+    let pipes = [];
+    let score = 0;
+    let gameOver = false;
+    const gravity = 0.6;
+    const flapPower = -12;
+    
+    function update() {
+        if (gameOver) return;
+        
+        bird.vy += gravity;
+        bird.y += bird.vy;
+        
+        if (bird.y + bird.height > canvas.height || bird.y < 0) {
+            gameOver = true;
+        }
+        
+        if (Math.random() < 0.01) {
+            const gapSize = 100;
+            const pipeY = Math.random() * (canvas.height - gapSize - 100) + 50;
+            pipes.push({ x: canvas.width, y: pipeY, width: 60, gapSize: gapSize });
+        }
+        
+        pipes.forEach(pipe => {
+            pipe.x -= 4;
+            
+            if (bird.x < pipe.x + pipe.width && bird.x + bird.width > pipe.x) {
+                if (bird.y < pipe.y || bird.y + bird.height > pipe.y + pipe.gapSize) {
+                    gameOver = true;
+                }
+            }
+            
+            if (pipe.x + pipe.width < bird.x && !pipe.scored) {
+                score++;
+                pipe.scored = true;
+                document.getElementById('flappyScore').textContent = `Score: ${score}`;
+            }
+        });
+        
+        pipes = pipes.filter(p => p.x + p.width > 0);
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#6366f1';
+        ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+        
+        ctx.fillStyle = '#ec4899';
+        pipes.forEach(pipe => {
+            ctx.fillRect(pipe.x, 0, pipe.width, pipe.y);
+            ctx.fillRect(pipe.x, pipe.y + pipe.gapSize, pipe.width, canvas.height - pipe.y - pipe.gapSize);
+        });
+        
+        if (gameOver) {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+            ctx.font = '20px Arial';
+            ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+        }
+    }
+    
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+    
+    canvas.addEventListener('click', () => {
+        bird.vy = flapPower;
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            bird.vy = flapPower;
+        }
+    });
+    
+    window.resetFlappy = () => {
+        bird = { x: 50, y: canvas.height / 2, vy: 0, width: 20, height: 20 };
+        pipes = [];
+        score = 0;
+        gameOver = false;
+        document.getElementById('flappyScore').textContent = `Score: 0`;
+    };
+    
+    gameLoop();
+}
+
+// SNAKE PAGE
+function createSnakePage() {
+    const content = document.getElementById('page-content');
+    content.innerHTML = `
+        <div class="page">
+            <button class="back-button" onclick="backButton()">← Back</button>
+            <div class="page-header">
+                <h2>🐍 Snake</h2>
+                <p>Use arrow keys to move. Eat the food and grow!</p>
+            </div>
+            <div class="score-display" id="snakeScore">Score: 0</div>
+            <canvas id="snakeCanvas" width="400" height="400"></canvas>
+            <div class="controls">
+                <button onclick="resetSnake()">Restart</button>
+            </div>
+        </div>
+    `;
+    
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 20;
+    
+    let snake = [{x: 10, y: 10}];
+    let food = {x: 15, y: 15};
+    let direction = {x: 1, y: 0};
+    let nextDirection = {x: 1, y: 0};
+    let score = 0;
+    let gameOver = false;
+    
+    function update() {
+        if (gameOver) return;
+        
+        direction = nextDirection;
+        const head = snake[0];
+        const newHead = {x: head.x + direction.x, y: head.y + direction.y};
+        
+        if (newHead.x < 0 || newHead.x >= canvas.width / gridSize || newHead.y < 0 || newHead.y >= canvas.height / gridSize) {
+            gameOver = true;
+        }
+        
+        for (let segment of snake) {
+            if (newHead.x === segment.x && newHead.y === segment.y) {
+                gameOver = true;
+            }
+        }
+        
+        snake.unshift(newHead);
+        
+        if (newHead.x === food.x && newHead.y === food.y) {
+            score++;
+            document.getElementById('snakeScore').textContent = `Score: ${score}`;
+            food = {x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize))};
+        } else {
+            snake.pop();
+        }
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#6366f1';
+        snake.forEach((segment, index) => {
+            if (index === 0) ctx.fillStyle = '#ec4899';
+            else ctx.fillStyle = '#6366f1';
+            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 1, gridSize - 1);
+        });
+        
+        ctx.fillStyle = '#14b8a6';
+        ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 1, gridSize - 1);
+        
+        if (gameOver) {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+            ctx.font = '16px Arial';
+            ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 30);
+        }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
+            case 'ArrowUp':
+                if (direction.y === 0) nextDirection = {x: 0, y: -1};
+                break;
+            case 'ArrowDown':
+                if (direction.y === 0) nextDirection = {x: 0, y: 1};
+                break;
+            case 'ArrowLeft':
+                if (direction.x === 0) nextDirection = {x: -1, y: 0};
+                break;
+            case 'ArrowRight':
+                if (direction.x === 0) nextDirection = {x: 1, y: 0};
+                break;
+        }
+    });
+    
+    window.resetSnake = () => {
+        snake = [{x: 10, y: 10}];
+        food = {x: 15, y: 15};
+        direction = {x: 1, y: 0};
+        nextDirection = {x: 1, y: 0};
+        score = 0;
+        gameOver = false;
+        document.getElementById('snakeScore').textContent = `Score: 0`;
+    };
+    
+    let gameTimer = setInterval(() => {
+        if (gameOver) return;
+        update();
+        draw();
+    }, 100);
+}
+
+// BREAKOUT PAGE
+function createBreakoutPage() {
+    const content = document.getElementById('page-content');
+    content.innerHTML = `
+        <div class="page">
+            <button class="back-button" onclick="backButton()">← Back</button>
+            <div class="page-header">
+                <h2>🧱 Breakout</h2>
+                <p>Move your paddle to bounce the ball and break bricks!</p>
+            </div>
+            <div class="score-display" id="breakoutScore">Score: 0</div>
+            <canvas id="breakoutCanvas" width="600" height="400"></canvas>
+            <div class="controls">
+                <button onclick="resetBreakout()">Restart</button>
+            </div>
+        </div>
+    `;
+    
+    const canvas = document.getElementById('breakoutCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let paddle = {x: canvas.width / 2 - 40, y: canvas.height - 20, width: 80, height: 10};
+    let ball = {x: canvas.width / 2, y: canvas.height / 2, radius: 6, vx: 3, vy: -3};
+    let bricks = [];
+    let score = 0;
+    let gameOver = false;
+    
+    for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 6; col++) {
+            bricks.push({x: col * 100, y: row * 20 + 20, width: 95, height: 15, alive: true});
+        }
+    }
+    
+    document.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, e.clientX - rect.left - paddle.width / 2));
+    });
+    
+    function update() {
+        if (gameOver) return;
+        
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        
+        if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) ball.vx *= -1;
+        if (ball.y - ball.radius < 0) ball.vy *= -1;
+        
+        if (ball.y - ball.radius > canvas.height) gameOver = true;
+        
+        if (ball.y + ball.radius > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+            ball.vy *= -1;
+        }
+        
+        bricks.forEach(brick => {
+            if (brick.alive && ball.x > brick.x && ball.x < brick.x + brick.width && ball.y > brick.y && ball.y < brick.y + brick.height) {
+                brick.alive = false;
+                ball.vy *= -1;
+                score++;
+                document.getElementById('breakoutScore').textContent = `Score: ${score}`;
+            }
+        });
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#ec4899';
+        ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        
+        ctx.fillStyle = '#6366f1';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        bricks.forEach(brick => {
+            if (brick.alive) {
+                ctx.fillStyle = '#14b8a6';
+                ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+            }
+        });
+        
+        if (gameOver) {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+            ctx.font = '20px Arial';
+            ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+        }
+    }
+    
+    window.resetBreakout = () => {
+        paddle = {x: canvas.width / 2 - 40, y: canvas.height - 20, width: 80, height: 10};
+        ball = {x: canvas.width / 2, y: canvas.height / 2, radius: 6, vx: 3, vy: -3};
+        bricks = [];
+        score = 0;
+        gameOver = false;
+        document.getElementById('breakoutScore').textContent = `Score: 0`;
+        
+        for (let row = 0; row < 4; row++) {
+            for (let col = 0; col < 6; col++) {
+                bricks.push({x: col * 100, y: row * 20 + 20, width: 95, height: 15, alive: true});
+            }
+        }
+    };
+    
+    setInterval(() => {
+        update();
+        draw();
+    }, 30);
+}
+
+// PONG PAGE
+function createPongPage() {
+    const content = document.getElementById('page-content');
+    content.innerHTML = `
+        <div class="page">
+            <button class="back-button" onclick="backButton()">← Back</button>
+            <div class="page-header">
+                <h2>🏸 Pong</h2>
+                <p>Player 1: W/S keys | Player 2: Arrow Up/Down</p>
+            </div>
+            <div class="game-info"><span id="p1Score">0</span> - <span id="p2Score">0</span></div>
+            <canvas id="pongCanvas" width="800" height="400"></canvas>
+        </div>
+    `;
+    
+    const canvas = document.getElementById('pongCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let p1 = {x: 20, y: canvas.height / 2 - 50, width: 10, height: 100, vy: 0};
+    let p2 = {x: canvas.width - 30, y: canvas.height / 2 - 50, width: 10, height: 100, vy: 0};
+    let ball = {x: canvas.width / 2, y: canvas.height / 2, radius: 5, vx: 4, vy: 4};
+    let p1Score = 0, p2Score = 0;
+    let keys = {};
+    
+    document.addEventListener('keydown', (e) => {
+        keys[e.key.toLowerCase()] = true;
+    });
+    
+    document.addEventListener('keyup', (e) => {
+        keys[e.key.toLowerCase()] = false;
+    });
+    
+    function update() {
+        if (keys['w'] && p1.y > 0) p1.y -= 5;
+        if (keys['s'] && p1.y < canvas.height - p1.height) p1.y += 5;
+        if (keys['arrowup'] && p2.y > 0) p2.y -= 5;
+        if (keys['arrowdown'] && p2.y < canvas.height - p2.height) p2.y += 5;
+        
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        
+        if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) ball.vy *= -1;
+        
+        if (ball.x - ball.radius < p1.x + p1.width && ball.y > p1.y && ball.y < p1.y + p1.height) {
+            ball.vx *= -1;
+            ball.x = p1.x + p1.width + ball.radius;
+        }
+        
+        if (ball.x + ball.radius > p2.x && ball.y > p2.y && ball.y < p2.y + p2.height) {
+            ball.vx *= -1;
+            ball.x = p2.x - ball.radius;
+        }
+        
+        if (ball.x - ball.radius < 0) {
+            p2Score++;
+            document.getElementById('p2Score').textContent = p2Score;
+            ball = {x: canvas.width / 2, y: canvas.height / 2, radius: 5, vx: 4, vy: 4};
+        }
+        
+        if (ball.x + ball.radius > canvas.width) {
+            p1Score++;
+            document.getElementById('p1Score').textContent = p1Score;
+            ball = {x: canvas.width / 2, y: canvas.height / 2, radius: 5, vx: -4, vy: 4};
+        }
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.strokeStyle = '#94a3b8';
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        ctx.fillStyle = '#6366f1';
+        ctx.fillRect(p1.x, p1.y, p1.width, p1.height);
+        
+        ctx.fillStyle = '#ec4899';
+        ctx.fillRect(p2.x, p2.y, p2.width, p2.height);
+        
+        ctx.fillStyle = '#14b8a6';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    setInterval(() => {
+        update();
+        draw();
+    }, 30);
+}
+
+// ANNIVERSARY PAGE
+function createAnniversaryPage() {
+    const content = document.getElementById('page-content');
+    content.innerHTML = `
+        <div class="page">
+            <button class="back-button" onclick="backButton()">← Back</button>
+            <div class="page-header">
+                <h2>🎂 1 Year Anniversary! 🎂</h2>
+                <p>Thank you for visiting! Let's celebrate with some fireworks!</p>
+            </div>
+            <canvas id="anniversaryCanvas" width="800" height="600"></canvas>
+            <div class="controls">
+                <button onclick="location.reload()">Close Celebration</button>
+            </div>
+        </div>
+    `;
+    
+    const canvas = document.getElementById('anniversaryCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let particles = [];
+    let confetti = [];
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 8;
+            this.vy = (Math.random() - 0.5) * 8;
+            this.life = 1;
+            this.size = Math.random() * 20 + 10;
+            this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        }
+        
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= 0.01;
+            this.vy += 0.1;
+        }
+        
+        draw() {
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    class Confetti {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = -10;
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = Math.random() * 3 + 2;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.color = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'][Math.floor(Math.random() * 6)];
+        }
+        
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.rotation += 0.1;
+        }
+        
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.fillStyle = this.color;
+            ctx.fillRect(-5, -2, 10, 4);
+            ctx.restore();
+        }
+    }
+    
+    // Create initial burst
+    for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+    }
+    
+    function animate() {
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Create confetti
+        if (Math.random() < 0.3) {
+            confetti.push(new Confetti());
+        }
+        
+        // Create new particles
+        if (Math.random() < 0.2) {
+            particles.push(new Particle());
+        }
+        
+        particles = particles.filter(p => p.life > 0);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        
+        confetti = confetti.filter(c => c.y < canvas.height);
+        confetti.forEach(c => {
+            c.update();
+            c.draw();
+        });
+        
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🎉 THANK YOU! 🎉', canvas.width / 2, 50);
+        ctx.font = '20px Arial';
+        ctx.fillText('A year of fun and creativity', canvas.width / 2, 90);
+        ctx.fillText('Here\'s to many more!', canvas.width / 2, 120);
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
 }

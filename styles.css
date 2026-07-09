@@ -47,6 +47,22 @@ header p {
     color: var(--text-dim);
 }
 
+.anniversary-badge {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    color: #000;
+    border-radius: 20px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
 .experiences {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -89,6 +105,19 @@ header p {
 
 .experience-card:hover::before {
     left: 0;
+}
+
+#anniversary-card {
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    color: #000;
+}
+
+#anniversary-card h3 {
+    color: #000;
+}
+
+#anniversary-card p {
+    color: #1f2937;
 }
 
 .experience-icon {
@@ -250,6 +279,27 @@ button:active {
     box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
 }
 
+.game-info {
+    background: var(--surface);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    color: var(--text-dim);
+}
+
+.score-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin: 10px 0;
+}
+
+.confetti {
+    position: fixed;
+    pointer-events: none;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -258,6 +308,15 @@ button:active {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
 
